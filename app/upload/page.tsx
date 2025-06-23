@@ -29,6 +29,10 @@ const UploadPage = () => {
 
     console.log("Real File ", realFile.name);
     console.log("Dummy File ", dummyFile.name);
+
+    const formdata = new FormData();
+    formdata.append("realFile", realFile);
+    formdata.append("dummyFile", dummyFile);
   };
 
   return (
