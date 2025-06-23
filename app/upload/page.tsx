@@ -1,12 +1,14 @@
 "use client";
-import React, { useRef } from "react";
+import axios from "axios";
+import React, { useRef, useState } from "react";
 
 const UploadPage = () => {
   console.log("Files submit btn clicked");
   const realFileRef = useRef<HTMLInputElement | null>(null);
   const dummyFileRef = useRef<HTMLInputElement | null>(null);
+  const [fileProgress, setFileProgress] = useState(0);
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!realFileRef.current && !dummyFileRef.current) {
       console.log("Both Files not Selected");
       return;
@@ -33,6 +35,13 @@ const UploadPage = () => {
     const formdata = new FormData();
     formdata.append("realFile", realFile);
     formdata.append("dummyFile", dummyFile);
+
+    await axios.post("/api/upload", formdata, {
+      onUploadProgress(progressEvent) {
+        const percent = (progressEvent.loaded / progressEvent.total!) * 100;
+        setFileProgress(percent);
+      },
+    });
   };
 
   return (
@@ -53,6 +62,7 @@ const UploadPage = () => {
         ref={dummyFileRef}
       />
       <button onClick={handleSubmit}>submit</button>
+      <h2>File upload progress : {fileProgress}</h2>
     </div>
   );
 };
